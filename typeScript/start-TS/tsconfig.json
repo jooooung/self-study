@@ -1,0 +1,12 @@
+// ts에서 js 변환 버전을 설정해주는 파일
+// 
+{
+    "compilerOptions": {
+      "outDir": "dist",
+      "target": "ES6",
+      "module": "commonjs",
+      "lib": ["ES6", "DOM"],
+
+      "sourceMap": true
+    },
+  }
