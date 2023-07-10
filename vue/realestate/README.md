@@ -1,24 +1,32 @@
-# real
+# vue.js 시작하기
 
-## Project setup
-```
-npm install
-```
+## 1. node.js 다운로드
+## 2. vue 설치하기
+cmd -> `npm install -g @vue/cli@4.5.11 `
+## 3. 프로젝트 생성
+cmd -> `vue create 프로젝트명`
+## 4. 서버 구동
+`npm run serve`
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 데이터 바인딩  {{ 데이터명 }}
+: JS 데이터를 HTML에 삽입하는 문법
+  - 데이터바인딩 이유 
+    1. 자주 변경할 데이터를 추후 유지보수 용이
+    2. 실시간 자동 렌더링 : data값을 변경하면 실시간으로 반영
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 반복문
+<태그 v-for="작명 in 반복회수, 데이터명" :key="작명">
+array 데이터를 넣으면 데이터 수만큼 반복
 
-### Lints and fixes files
-```
-npm run lint
-```
+## 이벤트 핸들러
+클릭 이벤트 : v-on:click , @click
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 조건식을 이용한 모달창 만들기
+1. UI의 현재 상태를 데이터로 저장
+2. 데이터에 따라 UI가 어떻게 보일지 작성
+
+## 조건식 v-if
+모달창의 기본 상태 설정 -> 클릭 시 조건식에 만족하게 변화시키기
+
+- 데이터 가져오기 import/export  
+내보낼 데이터 export - 가져올 데이터 import
