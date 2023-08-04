@@ -1,3 +1,4 @@
+const fileInput = document.getElementById("file");
 const modeBtn = document.getElementById("mode-btn");  // 그리기모드
 const destroyBtn = document.getElementById("destroy-btn");  // 전체지우기
 const eraserBtn = document.getElementById("eraser-btn");  // 지우개
@@ -84,6 +85,17 @@ function onEraserClick() {
   isFilling = false;
 }
 
+function onFileChange(event) {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+  const image = new Image();
+  image.src = url;
+  image.onload = function(){
+    ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
+}
+
+// canvas.onmousemove = onMove;
 canvas.addEventListener("mousemove", onMove);
 canvas.addEventListener("mousedown", onMouseDown);
 canvas.addEventListener("click", onCanvasClick);
@@ -99,3 +111,4 @@ colorOptions.forEach(color => color.addEventListener("click", onColorClick));
 modeBtn.addEventListener("click", onModeClick);
 destroyBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onEraserClick);
+fileInput.addEventListener("change", onFileChange);
