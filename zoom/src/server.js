@@ -10,12 +10,17 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (_, res) => res.render("home"));
 app.get("/*", (_, res) => res.redirect("/"));
 
-
 const httpServer = http.createServer(app);
 const wsServer = socketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
-  console.log(socket);
+  socket.onAny((event) => {
+    console.log(`Socket Event:${event}`);
+  });
+  socket.on("enter_room", (roomName, done) => {
+    socket.join(roomName);
+    done();
+  });
 });
 
 function onSocketClose() {
@@ -30,10 +35,10 @@ function onSocketClose() {
 //   console.log("Connected to Browser ✅");
 //   socket.on("close", onSocketClose);
 //   socket.on("message", (msg) => {
-  //     const message = JSON.parse(msg);
-  //     switch(message.type){
-    //       case "new message":
-//         sockets.forEach(aSocket => 
+//     const message = JSON.parse(msg);
+//     switch(message.type){
+//       case "new message":
+//         sockets.forEach(aSocket =>
 //           aSocket.send(`${socket.nickname} : ${message.payload}`)
 //         );
 //         break;
