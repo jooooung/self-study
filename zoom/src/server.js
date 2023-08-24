@@ -21,7 +21,14 @@ wsServer.on("connection", (socket) => {
     socket.join(roomName);
     done();
     socket.to(roomName).emit("welcome");
-  });
+  }); // 채팅방 입장 메세지
+  socket.on("disconnecting", () => {
+    socket.rooms.forEach(room => socket.to(room).emit("bye"));
+  }); // 채팅방 퇴장 메세지
+  socket.on("new message", (msg, room, done) => {
+    socket.to(room).emit("new message", msg);
+    done();
+  })
 });
 
 function onSocketClose() {
