@@ -14,21 +14,23 @@ const httpServer = http.createServer(app);
 const wsServer = socketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
+  socket["nickname"] = "Anon";
   socket.onAny((event) => {
     console.log(`Socket Event:${event}`);
   });
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName);
     done();
-    socket.to(roomName).emit("welcome");
+    socket.to(roomName).emit("welcome", socket.nickname);
   }); // 채팅방 입장 메세지
   socket.on("disconnecting", () => {
-    socket.rooms.forEach(room => socket.to(room).emit("bye"));
+    socket.rooms.forEach(room => socket.to(room).emit("bye", socket.nickname));
   }); // 채팅방 퇴장 메세지
   socket.on("new message", (msg, room, done) => {
-    socket.to(room).emit("new message", msg);
+    socket.to(room).emit("new message", `${socket.nickname}: ${msg}`);
     done();
-  })
+  }); // 메세지 출력
+  socket.on("nickname", (nickname) => (socket["nickname"] = nickname)); // 닉네임
 });
 
 function onSocketClose() {
