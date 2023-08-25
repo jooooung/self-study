@@ -61,3 +61,17 @@ socket.on("bye", (left) => {
 }); // 채팅방 퇴장 메세지
 
 socket.on("new message", addMessage); // 메세지 출력
+
+socket.on("room_change", (rooms) => {
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = "";
+  if(rooms.length === 0){
+    
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.append(li);
+  });
+});
