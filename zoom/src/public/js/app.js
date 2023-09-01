@@ -90,34 +90,52 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 
-async function getMedia() {
+async function getMedia(deviceId) {
+  const initialConstrains = {
+    audio: true,
+    video: { facingMode: "user" },
+  };
+  const cameraConstraints = {
+    audio: true,
+    video: {
+      deviceId: {
+        exact: deviceId,
+      },
+    },
+  };
   try {
-    myStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
+    myStream = await navigator.mediaDevices.getUserMedia(
+      deviceId ? cameraConstraints : initialConstrains
+    );
     myFace.srcObject = myStream;
+    if (!deviceId) {
+      await getCameras();
+    }
   } catch (e) {
     console.log(e);
   }
-}// get audio, video 
+} // get audio, video
 
 getMedia();
 
 async function getCameras() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices(); // 연결 기기
-    const cameras = devices.filter(device => device.kind === "videoinput"); // 연결 video 
+    const cameras = devices.filter((device) => device.kind === "videoinput"); // 연결 video
+    const currentCamera = myStream.getVideoTracks()[0];
     cameras.forEach((camera) => {
       const option = document.createElement("option");
       option.value = camera.deviceId;
       option.innerText = camera.label;
+      if (currentCamera.label === camera.label) {
+        option.selected = true;
+      }
       camerasSelect.appendChild(option);
-    })// camera select
+    }); // camera select
   } catch (e) {
     console.log(e);
   }
-}// camera list
+} // camera list
 
 getCameras();
 
@@ -132,7 +150,7 @@ function handleMuteClick() {
     muteBtn.innerText = "Mute";
     muted = false;
   }
-}// audio on/off
+} // audio on/off
 
 function handleCameraClick() {
   myStream
@@ -145,7 +163,12 @@ function handleCameraClick() {
     cameraBtn.innerText = "Camera On";
     cameraOff = true;
   }
-}// video on/off
+} // video on/off
+
+async function handleCameraChange() {
+  await getMedia(camerasSelect.value);
+} // camera change
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
+camerasSelect.addEventListener("input", handleCameraChange);
