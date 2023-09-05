@@ -24,6 +24,14 @@ instrument(wsServer, {
   mode: "development",
 });
 
+wsServer.on("connection", socket => {
+  socket.on("join_room", (roomName, done) => {
+    socket.join(roomName);
+    done();
+    socket.to(roomName).emit("welcome");
+  });
+});
+
 const handleListen = () => console.log("Listening on http://localhost:3000");
 httpServer.listen(3000, handleListen);
 
