@@ -170,6 +170,13 @@ function handleCameraClick() {
 
 async function handleCameraChange() {
   await getMedia(camerasSelect.value);
+  if (myPeerConnection) {
+    const videoTrack = myStream.getVideoTracks()[0];
+    const videoSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "video");
+    videoSender.replaceTrack(videoTrack);
+  }
 } // camera change
 
 muteBtn.addEventListener("click", handleMuteClick);
@@ -208,21 +215,21 @@ socket.on("welcome", async () => {
   socket.emit("offer", offer, roomName);
 });
 
-socket.on("offer", async(offer) => {
+socket.on("offer", async (offer) => {
   console.log("received the offer");
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();
   myPeerConnection.setLocalDescription(answer);
   socket.emit("answer", answer, roomName);
   console.log("send the answer");
-})
+});
 
-socket.on("answer", answer => {
+socket.on("answer", (answer) => {
   console.log("received the answer");
   myPeerConnection.setRemoteDescription(answer);
 });
 
-socket.on("ice", ice => {
+socket.on("ice", (ice) => {
   console.log("received candidate");
   myPeerConnection.addIceCandidate(ice);
 });
